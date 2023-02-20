@@ -1,0 +1,219 @@
+import React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import * as Colors from "@mui/material/colors";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import theme from "../theme";
+
+export default function Register(props) {
+  const [errorMessage, setErrorMessage] = React.useState("");
+
+  function Copyright(props) {
+    return (
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        align="center"
+        {...props}
+      >
+        {"Copyright © "}
+        <Link color="inherit" href="https://mui.com/">
+          Your Website
+        </Link>{" "}
+        {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    );
+  }
+
+  const login_function = async (event) => {
+    event.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+    const result = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    }).then((res) => {
+      res.text().then(async (text) => {
+        const body = await JSON.parse(text);
+        if (res.status === 200) {
+          alert("Successfully registered!");
+          // window.open("/home");    //opens in new tab
+          window.location.href = "/home"; //opens in same tab
+        } else {
+          setErrorMessage(body["message"]);
+          setTimeout(function () {
+            setErrorMessage("");
+          }, 5000);
+        }
+      });
+    });
+
+    console.log(result);
+  };
+  return (
+    <ThemeProvider theme={theme}>
+      {/* <CssBaseline /> */}
+      <Container
+        component="main"
+        maxWidth="xs"
+        sx={{
+          bgcolor: Colors.grey[800],
+          my: "5%",
+          borderRadius: "10px",
+          borderWidth: "2px",
+          border: "solid",
+          borderColor: "secondary.main",
+          p: "5px",
+        }}
+      >
+        {/* <CssBaseline /> */}
+        <Box
+          sx={{
+            px: 4,
+            // marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+
+          <Typography component="h1" variant="h5" sx={{ color: "white" }}>
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={login_function}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="outlined"
+              sx={{
+                mt: 3,
+                mb: 2,
+              }}
+              color="primary"
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
+    // </ParticlesBackground>
+
+    // <div className="auth-inner">
+    //   <form className="form" onSubmit={login_function}>
+    //     <h3>Login</h3>
+
+    //     <div className="mb-3">
+    //       <label className="label-text">Email address*</label>
+    //       <input
+    //         type="email"
+    //         className="form-control"
+    //         placeholder="Enter email"
+    //         id="login-email"
+    //         required="true"
+    //       />
+    //     </div>
+
+    //     <div className="mb-3">
+    //       <label className="label-text">Password*</label>
+    //       <input
+    //         type="password"
+    //         className="form-control"
+    //         placeholder="Enter password"
+    //         id="login-password"
+    //         required="true"
+    //       />
+    //     </div>
+
+    //     <div className="mb-3">
+    //       <div className="custom-control custom-checkbox">
+    //         <input
+    //           type="checkbox"
+    //           className="custom-control-input"
+    //           id="customCheck1"
+    //         />
+    //         <label className="custom-control-label" htmlFor="customCheck1">
+    //           Remember me
+    //         </label>
+    //       </div>
+    //     </div>
+
+    //     <div className="d-grid">
+    //       <button
+    //         type="submit"
+    //         className="btn btn-primary"
+    //         onClick={login_function}
+    //       >
+    //         Submit
+    //       </button>
+    //     </div>
+    //     {errorMessage && <p className="error"> {errorMessage} </p>}
+    //     <p className="forgot-password text-right">
+    //       <a href="#">Forgot password?</a>
+    //     </p>
+    //   </form>
+    // </div>
+  );
+}
